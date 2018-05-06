@@ -1,4 +1,4 @@
-package com.lhl.spring.servlet;
+package com.lhl.spring.framework.web.servlet;
 
 import com.lhl.spring.annotation.MyAutowried;
 import com.lhl.spring.annotation.MyController;
@@ -81,7 +81,7 @@ public class DispatchServlet extends HttpServlet {
     }
 
     /**
-     * 扫描配置文件中的包下的类,保存到容器（Map）中
+     * 扫描配置文件中的包下的类,保存到容器（List）中
      */
     private void doScanner(String packName) {
         URL url = this.getClass().getClassLoader().getResource(packName.replaceAll("\\.", "/"));
