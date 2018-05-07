@@ -4,6 +4,7 @@ import com.lhl.spring.annotation.MyAutowried;
 import com.lhl.spring.annotation.MyController;
 import com.lhl.spring.annotation.MyService;
 import com.lhl.spring.demo.mvc.action.MyAction;
+import com.lhl.spring.framework.context.MyApplicationContext;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -39,8 +40,8 @@ public class DispatchServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         //初始化
-
-        //定位,读取的web.xml下的contextConfigLocation配置文件
+        MyApplicationContext context = new MyApplicationContext(config.getInitParameter("contextConfigLocation"));
+       /* //定位,读取的web.xml下的contextConfigLocation配置文件
         doLoadConfig(config.getInitParameter("contextConfigLocation"));
         //加载
         doScanner(contextConfig.getProperty("scanPackage"));
@@ -53,7 +54,7 @@ public class DispatchServlet extends HttpServlet {
         initHandlerMapping();
 
         MyAction action = (MyAction) beanMap.get("myAction");
-        action.query(null,null,"lhl");
+        action.query(null,null,"lhl");*/
 
     }
 

@@ -25,6 +25,7 @@ public class MyBeanDefinitionReader {
         for (int i = 0; i < locations.length; i++) {
             InputStream in = this.getClass().getClassLoader().getResourceAsStream(locations[i].replace("classpath:", ""));
             try {
+                configs[i] = new Properties();
                 configs[i].load(in);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -38,21 +39,21 @@ public class MyBeanDefinitionReader {
             }
         }
 
-        for(Properties p : configs)
+        for (Properties p : configs)
             doScanner(p.getProperty("scanPackage"));
 
     }
 
-    public List<String> loadBeanDefinitions(){
+    public List<String> loadBeanDefinitions() {
         return registyBeanClassNames;
     }
 
     //获取bean的一个包装类
     public MyBeanDefinition registerBeanDefinition(String className) {
-        if(registyBeanClassNames.contains(className)) {
+        if (registyBeanClassNames.contains(className)) {
             MyBeanDefinition beanDefinition = new MyBeanDefinition();
             beanDefinition.setBeanClassName(className);
-//            beanDefinition.setFactoryBeanName();
+            beanDefinition.setFactoryBeanName(lowerFirstCase(className.substring(className.lastIndexOf(".")+1)));
             return beanDefinition;
         }
         return null;
@@ -80,5 +81,11 @@ public class MyBeanDefinitionReader {
 
     private Properties[] getConfigs() {
         return configs;
+    }
+
+    private String lowerFirstCase(String str) {
+        char[] chars = str.toCharArray();
+        chars[0] += 32;
+        return String.valueOf(chars);
     }
 }

@@ -1,7 +1,5 @@
 package com.lhl.spring.framework.beans.factory.config;
 
-import com.sun.istack.internal.Nullable;
-
 /**
  * 用来存储配置文件中的信息
  * 相当于保存在内存中的配置
