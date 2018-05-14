@@ -21,12 +21,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by hongliang.liu on 2018/5/6.
  */
 //模仿ClassPathXmlApplicationContext
-public class MyApplicationContext implements MyBeanFactory {
+public class MyApplicationContext extends MyDefaultListableBeanFactory implements MyBeanFactory {
     private String[] configLocations;
 
     private MyBeanDefinitionReader reader;
-    //保存配置信息
-    private Map<String, MyBeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>();
+
     //用来保证注册式单例
     private Map<String, Object> beanCacheMap = new HashMap<String, Object>();
     //用来存储所有被代理了的类
@@ -133,6 +132,7 @@ public class MyApplicationContext implements MyBeanFactory {
                 return null;
             //实例初始化之前调用一次
             beanPostProcessor.postProcessBeforeInitialization(instance, beanName);
+
             MyBeanWrapper wrapper = new MyBeanWrapper(instance);
             this.beanWrapperMap.put(beanName, wrapper);
             //实例初始化后调用一次

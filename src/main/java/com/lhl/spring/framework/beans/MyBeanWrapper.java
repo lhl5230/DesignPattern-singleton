@@ -1,5 +1,6 @@
 package com.lhl.spring.framework.beans;
 
+import com.lhl.spring.framework.aop.MyAopProxy;
 import com.lhl.spring.framework.beans.factory.MyFactoryBean;
 import com.lhl.spring.framework.beans.factory.config.MyBeanPostProcessor;
 
@@ -9,11 +10,16 @@ import com.lhl.spring.framework.beans.factory.config.MyBeanPostProcessor;
 public class MyBeanWrapper implements MyFactoryBean {
 
     private MyBeanPostProcessor beanPostProcessor;
-    private Object wrapperInstance;//包装了的对象
-    private Object originalInstance; //原生对象，通过反射new出来的，要包装起来存下来
+    //包装了的对象,动态代理生成
+    private Object wrapperInstance;
+    //原生对象，通过反射new出来的，要包装起来存下来
+    private Object originalInstance;
+
+    private MyAopProxy aopProxy = new MyAopProxy();
 
     public MyBeanWrapper(Object instance) {
-        this.wrapperInstance = instance;
+        //用动态代理生成对象
+        this.wrapperInstance = aopProxy.getProxy(instance);
         this.originalInstance = instance;
     }
 
