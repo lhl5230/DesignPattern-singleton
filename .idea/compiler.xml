@@ -11,8 +11,10 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="myspring" target="1.7" />
-      <module name="myspring-1.0" target="1.7" />
+      <module name="myspring" target="1.8" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />
   </component>
 </project>

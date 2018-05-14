@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -47,9 +48,9 @@ public class MyApplicationContext implements MyBeanFactory {
         doRegistry(beanDefinitions);
         //依赖注入
         doAutowired();
-        MyAction action = (MyAction) this.getBean("myAction");
-        action.query(null,null,"lhl");
-        System.out.println();
+//        MyAction action = (MyAction) this.getBean("myAction");
+//        action.query(null, null, "lhl");
+//        System.out.println();
     }
 
     //自动注入
@@ -81,7 +82,7 @@ public class MyApplicationContext implements MyBeanFactory {
                 autowiredBeanName = field.getType().getName();
             field.setAccessible(true);
             try {
-                if(beanWrapperMap.get(autowiredBeanName) == null)
+                if (beanWrapperMap.get(autowiredBeanName) == null)
                     getBean(autowiredBeanName);
                 field.set(instance, beanWrapperMap.get(autowiredBeanName).getWrappedInstance());
             } catch (IllegalAccessException e) {
@@ -162,5 +163,18 @@ public class MyApplicationContext implements MyBeanFactory {
             e.printStackTrace();
         }
         return instance;
+    }
+
+    public String[] getBeanDefinitionNames() {
+        return this.beanDefinitionMap.keySet().toArray(new String[beanDefinitionMap.size()]);
+    }
+
+    public String getConfigProperty(String key) {
+        Properties[] props = reader.getConfigs();
+        for (Properties p : props) {
+            if (p.containsKey(key))
+                return p.getProperty(key);
+        }
+        return null;
     }
 }

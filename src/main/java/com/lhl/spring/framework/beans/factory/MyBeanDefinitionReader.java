@@ -79,7 +79,7 @@ public class MyBeanDefinitionReader {
         }
     }
 
-    private Properties[] getConfigs() {
+    public Properties[] getConfigs() {
         return configs;
     }
 

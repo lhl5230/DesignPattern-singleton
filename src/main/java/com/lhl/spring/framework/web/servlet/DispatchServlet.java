@@ -56,6 +56,16 @@ public class DispatchServlet extends HttpServlet {
         MyAction action = (MyAction) beanMap.get("myAction");
         action.query(null,null,"lhl");*/
 
+        //spring mvc 流程
+        initStrategies(context);
+
+    }
+
+    /**
+     * 初始化策略
+     * @param context
+     */
+    private void initStrategies(MyApplicationContext context) {
     }
 
     /**
@@ -158,7 +168,7 @@ public class DispatchServlet extends HttpServlet {
                 field.setAccessible(true);
                 try {
                     //给对象属性赋值
-                    field.set(instance,beanMap.get(beanName));
+                    field.set(instance, beanMap.get(beanName));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
