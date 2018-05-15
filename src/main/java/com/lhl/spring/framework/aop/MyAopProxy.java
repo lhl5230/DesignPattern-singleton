@@ -11,7 +11,7 @@ import java.lang.reflect.Proxy;
 public class MyAopProxy implements InvocationHandler {
     private MyAopConfig config;
 
-    private Object target; //生成的代理对象
+    private Object target; //原始对象
 
     /**
      * @param original 原始对象

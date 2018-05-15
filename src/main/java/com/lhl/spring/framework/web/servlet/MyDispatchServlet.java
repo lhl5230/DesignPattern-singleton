@@ -3,6 +3,7 @@ package com.lhl.spring.framework.web.servlet;
 import com.lhl.spring.annotation.MyController;
 import com.lhl.spring.annotation.MyRequestMapping;
 import com.lhl.spring.annotation.MyRequestParam;
+import com.lhl.spring.framework.aop.MyAopProxyUtils;
 import com.lhl.spring.framework.context.MyApplicationContext;
 
 import javax.servlet.ServletConfig;
@@ -225,34 +226,42 @@ public class MyDispatchServlet extends HttpServlet {
     private void initHandlerMappings(MyApplicationContext context) {
         //容器中获取所有的实例
         String[] beanNames = context.getBeanDefinitionNames();
-        for (String beanName : beanNames) {
+        try {
+            for (String beanName : beanNames) {
+                //返回的是代理对象
+                Object proxyController = context.getBean(beanName);
+                //要从代理对象中,获取到原始对象
+                Object controller = MyAopProxyUtils.getTargetObject(proxyController);
 
-            Object controller = context.getBean(beanName);
-            Class<?> clazz = controller.getClass();
-            if (!clazz.isAnnotationPresent(MyController.class)) {
-                continue;
-            }
-
-            MyRequestMapping requestMapping = clazz.getAnnotation(MyRequestMapping.class);
-            String baseUrl = requestMapping.value(); //方法上基础地址
-
-            //获取类的方法
-            Method[] methods = clazz.getMethods();
-            for (Method method : methods) {
-                //方法上是否加了requestmapping
-                if (!method.isAnnotationPresent(MyRequestMapping.class))
+                Class<?> clazz = controller.getClass();
+                if (!clazz.isAnnotationPresent(MyController.class)) {
                     continue;
-                MyRequestMapping methodMapping = method.getAnnotation(MyRequestMapping.class);
-                String requestUrl = methodMapping.value()
-                        .replaceAll("\\*", ".*") //有通配符*的，改成正则 .*，表示任意字符0次或多次
-                        .replaceAll("/+", "/"); //访问方法url地址
+                }
 
-                String realUrl = baseUrl + requestUrl; //真的请求地址
-                Pattern pattern = Pattern.compile(realUrl);
+                MyRequestMapping requestMapping = clazz.getAnnotation(MyRequestMapping.class);
+                String baseUrl = requestMapping.value(); //方法上基础地址
 
-                handlerMappings.add(new MyHandlerMapping(pattern, controller, method));
+                //获取类的方法
+                Method[] methods = clazz.getMethods();
+                for (Method method : methods) {
+                    //方法上是否加了requestmapping
+                    if (!method.isAnnotationPresent(MyRequestMapping.class))
+                        continue;
+                    MyRequestMapping methodMapping = method.getAnnotation(MyRequestMapping.class);
+                    String requestUrl = methodMapping.value()
+                            .replaceAll("\\*", ".*") //有通配符*的，改成正则 .*，表示任意字符0次或多次
+                            .replaceAll("/+", "/"); //访问方法url地址
+
+                    String realUrl = baseUrl + requestUrl; //真的请求地址
+                    Pattern pattern = Pattern.compile(realUrl);
+
+                    handlerMappings.add(new MyHandlerMapping(pattern, controller, method));
+                }
             }
+        } catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
 

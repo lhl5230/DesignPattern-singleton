@@ -1,5 +1,6 @@
 package com.lhl.spring.framework.beans;
 
+import com.lhl.spring.framework.aop.MyAopConfig;
 import com.lhl.spring.framework.aop.MyAopProxy;
 import com.lhl.spring.framework.beans.factory.MyFactoryBean;
 import com.lhl.spring.framework.beans.factory.config.MyBeanPostProcessor;
@@ -30,5 +31,9 @@ public class MyBeanWrapper implements MyFactoryBean {
     //返回代理后的Class 可能是$Proxy0
     public Class<?> getWrappedClass() {
         return this.wrapperInstance.getClass();
+    }
+
+    public void setMyAopConfig(MyAopConfig aopConfig) {
+        aopProxy.setConfig(aopConfig);
     }
 }

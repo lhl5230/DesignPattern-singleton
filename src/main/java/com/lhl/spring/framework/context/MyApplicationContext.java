@@ -3,7 +3,7 @@ package com.lhl.spring.framework.context;
 import com.lhl.spring.annotation.MyAutowried;
 import com.lhl.spring.annotation.MyController;
 import com.lhl.spring.annotation.MyService;
-import com.lhl.spring.demo.mvc.action.MyAction;
+import com.lhl.spring.framework.aop.MyAopConfig;
 import com.lhl.spring.framework.beans.MyBeanWrapper;
 import com.lhl.spring.framework.beans.factory.MyBeanDefinitionReader;
 import com.lhl.spring.framework.beans.factory.MyBeanFactory;
@@ -11,11 +11,14 @@ import com.lhl.spring.framework.beans.factory.config.MyBeanDefinition;
 import com.lhl.spring.framework.beans.factory.config.MyBeanPostProcessor;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by hongliang.liu on 2018/5/6.
@@ -127,13 +130,15 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
             //生成通知事件
             MyBeanPostProcessor beanPostProcessor = new MyBeanPostProcessor();
 
-            Object instance = instantionBean(beanDefinition);
+            Object instance = instantiationBean(beanDefinition);
             if (instance == null)
                 return null;
             //实例初始化之前调用一次
             beanPostProcessor.postProcessBeforeInitialization(instance, beanName);
 
             MyBeanWrapper wrapper = new MyBeanWrapper(instance);
+            wrapper.setMyAopConfig(instantiationAopConfig(beanDefinition));
+
             this.beanWrapperMap.put(beanName, wrapper);
             //实例初始化后调用一次
             beanPostProcessor.postProcessAfterInitialization(instance, beanName);
@@ -146,8 +151,35 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
         return null;
     }
 
+    /**
+     * 初始化Aop配置,切入点切面等
+     *
+     * @param beanDefinition
+     * @return
+     */
+    private MyAopConfig instantiationAopConfig(MyBeanDefinition beanDefinition) throws Exception {
+        MyAopConfig config = new MyAopConfig();
+        String expression = reader.getConfigs()[0].getProperty("pointCut");
+        String[] before = reader.getConfigs()[0].getProperty("aspectBefore").split("\\s");
+        String[] after = reader.getConfigs()[0].getProperty("aspectAfter").split("\\s");
+        String className = beanDefinition.getBeanClassName();
+        Class<?> clazz = Class.forName(className);
+
+        Pattern pattern = Pattern.compile(expression);
+
+        Class aspectClass = Class.forName(before[0]);
+        for (Method m : clazz.getMethods()) {
+            Matcher matcher = pattern.matcher(m.toString()); //方法名是否匹配规则
+            if (matcher.matches()) {
+                //满足切面规则的类,添加到AOP配置中
+                config.put(m, aspectClass.newInstance(), new Method[]{aspectClass.getMethod(before[1]), aspectClass.getMethod(after[1])});
+            }
+        }
+        return config;
+    }
+
     //返回一个实例Bean,暂时没保证线程安全
-    private Object instantionBean(MyBeanDefinition beanDefinition) {
+    private Object instantiationBean(MyBeanDefinition beanDefinition) {
         Object instance = null;
         String className = beanDefinition.getBeanClassName();
         try {
