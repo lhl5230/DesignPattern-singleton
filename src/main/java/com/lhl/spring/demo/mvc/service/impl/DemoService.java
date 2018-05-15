@@ -10,6 +10,8 @@ import com.lhl.spring.demo.mvc.service.IDemoService;
 public class DemoService implements IDemoService {
     @Override
     public String getName(String name) {
-        return "My name is " + name;
+        String result = "My name is " + name;
+        System.out.println(result);
+        return result;
     }
 }

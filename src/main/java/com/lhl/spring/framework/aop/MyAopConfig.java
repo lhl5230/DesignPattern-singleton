@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-/** express配置信息
+/** express配置信息,哪些类的哪些方法需要增强
  * Created by hongliang.liu on 2018/5/14.
  */
 public class MyAopConfig {

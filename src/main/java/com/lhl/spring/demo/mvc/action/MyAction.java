@@ -31,9 +31,8 @@ public class MyAction {
 
     @MyRequestMapping("/query.do")
     public MyModelAndView query(HttpServletRequest req, HttpServletResponse resp, @MyRequestParam("name") String name) {
-        String result = demoService.getName(name);
-        System.out.println(result);
-        System.out.println(queryService.query(name));
+        demoService.getName(name);
+        queryService.query(name);
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("teacher","tome");
         map.put("data",100);

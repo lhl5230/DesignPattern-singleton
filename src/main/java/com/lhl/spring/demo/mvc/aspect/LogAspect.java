@@ -6,11 +6,11 @@ package com.lhl.spring.demo.mvc.aspect;
 public class LogAspect {
     //在调用一个方法之前，执行这个方法
     public void before() {
-        System.out.println("method before");
+        System.out.println("method before log " );
     }
 
     //在调用一个方法之后，执行这个方法
     public void after() {
-        System.out.println("method after");
+        System.out.println("method after log");
     }
 }

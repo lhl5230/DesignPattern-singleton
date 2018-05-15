@@ -25,13 +25,16 @@ public class MyAopProxy implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        boolean contains = config.contains(method);
+        //method对象为接口类方法，如：public abstract java.lang.String com.lhl.spring.demo.mvc.service.IDemoService.getName(java.lang.String)
+        Method m = target.getClass().getMethod(method.getName(),method.getParameterTypes());
+        //但config里面保存的是切点方法，为具体的实现类，如：public java.lang.String com.lhl.spring.demo.mvc.service.impl.DemoService.getName(java.lang.String)
+        boolean contains = config.contains(m);
         MyAopConfig.MyAspect aspect = null;
         if(contains) {
-            aspect = config.get(method);
+            aspect = config.get(m);
             aspect.getPoints()[0].invoke(aspect.getAspect());
         }
-        Object obj = method.invoke(this.target,args);
+        Object obj = m.invoke(this.target,args);
 
         if(contains && aspect != null) {
             aspect.getPoints()[1].invoke(aspect.getAspect());
