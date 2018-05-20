@@ -30,7 +30,7 @@ public class MyAction {
     IModifyService modifyService;
 
     @MyRequestMapping("/query.do")
-    public MyModelAndView query(HttpServletRequest req, HttpServletResponse resp, @MyRequestParam("name") String name) {
+    public MyModelAndView query(HttpServletRequest req, HttpServletResponse resp, @MyRequestParam("name") String name) throws Exception {
         demoService.getName(name);
         queryService.query(name);
         Map<String,Object> map = new HashMap<String,Object>();

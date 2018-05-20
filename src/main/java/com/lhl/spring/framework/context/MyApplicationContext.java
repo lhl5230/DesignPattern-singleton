@@ -162,6 +162,7 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
         String expression = reader.getConfigs()[0].getProperty("pointCut");
         String[] before = reader.getConfigs()[0].getProperty("aspectBefore").split("\\s");
         String[] after = reader.getConfigs()[0].getProperty("aspectAfter").split("\\s");
+        String[] rollback = reader.getConfigs()[0].getProperty("aspectRollback").split("\\s");
         String className = beanDefinition.getBeanClassName();
         Class<?> clazz = Class.forName(className);
 
@@ -172,7 +173,7 @@ public class MyApplicationContext extends MyDefaultListableBeanFactory implement
             Matcher matcher = pattern.matcher(m.toString()); //方法名是否匹配规则
             if (matcher.matches()) {
                 //满足切面规则的类,添加到AOP配置中
-                config.put(m, aspectClass.newInstance(), new Method[]{aspectClass.getMethod(before[1]), aspectClass.getMethod(after[1])});
+                config.put(m, aspectClass.newInstance(), new Method[]{aspectClass.getMethod(before[1]), aspectClass.getMethod(after[1]), aspectClass.getMethod(rollback[1])});
             }
         }
         return config;

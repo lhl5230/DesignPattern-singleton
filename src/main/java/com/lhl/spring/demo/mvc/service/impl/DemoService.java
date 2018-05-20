@@ -9,9 +9,10 @@ import com.lhl.spring.demo.mvc.service.IDemoService;
 @MyService
 public class DemoService implements IDemoService {
     @Override
-    public String getName(String name) {
+    public String getName(String name) throws Exception{
         String result = "My name is " + name;
         System.out.println(result);
-        return result;
+        throw new Exception("模拟异常");
+//        return result;
     }
 }
